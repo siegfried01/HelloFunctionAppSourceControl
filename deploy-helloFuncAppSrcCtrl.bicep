@@ -40,6 +40,12 @@
 param serverfarms_EastUS2Plan_name string = 'EastUS2Plan'
 param sites_HelloFunctionAppSourceControl20240512105218_name string = 'HelloFunctionAppSourceControl20240512105218'
 
+@description('The branch of the GitHub repository to use.')
+param branch string = 'master'
+@description('The URL for the GitHub repository that contains the project to deploy.')
+param repoURL string = 'https://github.com/siegfried01/HelloFunctionAppSourceControl.git'
+
+
 resource serverfarms_EastUS2Plan_name_resource 'Microsoft.Web/serverfarms@2023-01-01' = {
   name: serverfarms_EastUS2Plan_name
   location: 'East US 2'
@@ -112,6 +118,16 @@ resource sites_HelloFunctionAppSourceControl20240512105218_name_resource 'Micros
     keyVaultReferenceIdentity: 'SystemAssigned'
   }
 }
+resource siteName_web 'Microsoft.Web/sites/sourcecontrols@2020-12-01' = {
+  parent: sites_HelloFunctionAppSourceControl20240512105218_name_resource
+  name: 'web'
+  properties: {
+    repoUrl: repoURL
+    branch: branch
+    isManualIntegration: true
+  }
+}
+
 
 resource sites_HelloFunctionAppSourceControl20240512105218_name_ftp 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2023-01-01' = {
   parent: sites_HelloFunctionAppSourceControl20240512105218_name_resource
